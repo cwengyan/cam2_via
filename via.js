@@ -1036,9 +1036,9 @@ function _via_load_canvas_regions() {
     var region_i = new ImageRegion();
     for ( var key in regions[i].shape_attributes ) {
       region_i.shape_attributes[key] = regions[i].shape_attributes[key];
+
     }
     _via_canvas_regions.push(region_i);
-
     switch(_via_canvas_regions[i].shape_attributes['name']) {
     case VIA_REGION_SHAPE.RECT:
       var x      = regions[i].shape_attributes['x'] / _via_canvas_scale;
@@ -3008,6 +3008,7 @@ window.addEventListener('keydown', function(e) {
       sel_all_regions();
       copy_sel_regions();
       move_to_next_image();
+      setTimeout(paste_sel_regions, 200); // TODO CHANGE FROM DELAY TO LOOP
       e.preventDefault();
       return;
     }
@@ -3293,9 +3294,9 @@ function move_to_next_image() {
       _via_hook_next_image(current_img_index);
     }
 
-    if (_via_is_ctrl_pressed &&  _via_is_all_region_selected) {
-      paste_sel_regions();
-    }
+    //if (_via_is_ctrl_pressed &&  _via_is_all_region_selected) {
+    //  paste_sel_regions();
+    //}
   }
 }
 
