@@ -3748,6 +3748,14 @@ window.addEventListener('keydown', function(e) {
       e.preventDefault();
       return;
     }
+
+    if ( e.which === 81 ) { // Ctrl + q
+      sel_all_regions();
+      copy_sel_regions();
+      move_to_next_image();
+      e.preventDefault();
+      return;
+    }
   }
 
   if( e.which === 46 || e.which === 8) { // Del or Backspace
@@ -4028,6 +4036,10 @@ function move_to_next_image() {
 
     if (typeof _via_hook_next_image === 'function') {
       _via_hook_next_image(current_img_index);
+    }
+
+    if (_via_is_ctrl_pressed &&  _via_is_all_region_selected) {
+      paste_sel_regions();
     }
   }
 }
