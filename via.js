@@ -3274,14 +3274,6 @@ function move_to_next_image() {
     _via_is_region_selected = false;
     _via_user_sel_region_id = -1;
 
-    if (_via_is_canvas_zoomed) {
-      _via_is_canvas_zoomed = false;
-      _via_canvas_zoom_level_index = VIA_CANVAS_DEFAULT_ZOOM_LEVEL_INDEX;
-      var zoom_scale = VIA_CANVAS_ZOOM_LEVELS[_via_canvas_zoom_level_index];
-      set_all_canvas_scale(zoom_scale);
-      set_all_canvas_size(_via_canvas_width, _via_canvas_height);
-      _via_canvas_scale = _via_canvas_scale_without_zoom;
-    }
 
     var current_img_index = _via_image_index;
     if ( _via_image_index === (_via_img_count-1) ) {
@@ -3292,6 +3284,28 @@ function move_to_next_image() {
 
     if (typeof _via_hook_next_image === 'function') {
       _via_hook_next_image(current_img_index);
+    }
+
+    if (_via_is_canvas_zoomed) {
+      //_via_is_canvas_zoomed = false;
+      //_via_canvas_zoom_level_index = VIA_CANVAS_DEFAULT_ZOOM_LEVEL_INDEX;
+      var zoom_scale = VIA_CANVAS_ZOOM_LEVELS[_via_canvas_zoom_level_index];
+      setTimeout(function(){
+      //set_all_canvas_scale(zoom_scale);
+      //set_all_canvas_size(_via_canvas_width, _via_canvas_height);
+      //show_image(_via_image_index );
+        _via_is_canvas_zoomed = true;
+        var zoom_scale = VIA_CANVAS_ZOOM_LEVELS[_via_canvas_zoom_level_index];
+        set_all_canvas_scale(zoom_scale);
+        set_all_canvas_size(_via_canvas_width  * zoom_scale,
+                            _via_canvas_height * zoom_scale);
+        _via_canvas_scale = _via_canvas_scale_without_zoom / zoom_scale;
+
+        _via_load_canvas_regions(); // image to canvas space transform
+        _via_redraw_img_canvas();
+        _via_redraw_reg_canvas();
+        _via_reg_canvas.focus();
+      }, 20);
     }
 
     //if (_via_is_ctrl_pressed &&  _via_is_all_region_selected) {
