@@ -3287,13 +3287,8 @@ function move_to_next_image() {
     }
 
     if (_via_is_canvas_zoomed) {
-      //_via_is_canvas_zoomed = false;
-      //_via_canvas_zoom_level_index = VIA_CANVAS_DEFAULT_ZOOM_LEVEL_INDEX;
       var zoom_scale = VIA_CANVAS_ZOOM_LEVELS[_via_canvas_zoom_level_index];
       setTimeout(function(){
-      //set_all_canvas_scale(zoom_scale);
-      //set_all_canvas_size(_via_canvas_width, _via_canvas_height);
-      //show_image(_via_image_index );
         _via_is_canvas_zoomed = true;
         var zoom_scale = VIA_CANVAS_ZOOM_LEVELS[_via_canvas_zoom_level_index];
         set_all_canvas_scale(zoom_scale);
@@ -3307,10 +3302,6 @@ function move_to_next_image() {
         _via_reg_canvas.focus();
       }, 20);
     }
-
-    //if (_via_is_ctrl_pressed &&  _via_is_all_region_selected) {
-    //  paste_sel_regions();
-    //}
   }
 }
 
