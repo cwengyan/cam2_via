@@ -3018,12 +3018,12 @@ window.addEventListener('keydown', function(e) {
     del_sel_regions();
     e.preventDefault();
   }
-  if (e.which === 78 || e.which === 39) { // n or right arrow
+  if (e.which === 78) { // next image (n)
     move_to_next_image();
     e.preventDefault();
     return;
   }
-  if (e.which === 80 || e.which === 37) { // n or right arrow
+  if (e.which === 80) { // previous image (p) 
     move_to_prev_image();
     e.preventDefault();
     return;
