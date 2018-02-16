@@ -3777,25 +3777,26 @@ window.addEventListener('keydown', function(e) {
     }
   }
 
-  if (e.which === 9) { 
+  if (e.which === 9) { // tab through bounding boxes
     if (_via_canvas_regions.length > 0) {
       var region_id = -1;
       if (_via_is_region_selected) {
         region_id = _via_user_sel_region_id;
-        if (e.shiftKey) { // tab backwards through bounding boxes
+        if (e.shiftKey) { // tab backwards
           region_id = (region_id - 1 +_via_canvas_regions.length) % _via_canvas_regions.length;
         }
-        else { // tab forward through bounding boxes
+        else { // tab forward
           region_id = (region_id + 1) % _via_canvas_regions.length;
         }
       }
       else {
-        region_id = 1;
+        region_id = 0;
       }
         
       _via_user_sel_region_id = region_id;
       toggle_all_regions_selection(false);
-      set_region_select_state(region_id, true);
+      console.log("region_id: " + region_id);
+      select_only_region(region_id);
       _via_redraw_reg_canvas();
     }
     e.preventDefault();
