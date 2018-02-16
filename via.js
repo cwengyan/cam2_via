@@ -861,35 +861,43 @@ function pack_via_metadata(return_type) {
       _via_img_metadata_as_obj[image_id] = image_data;
     }
     return [JSON.stringify(_via_img_metadata_as_obj)];
-  } else {
+  } else if ( return_type === "xml" ) {
      var xml_string = ""; 
+     xml_string += "<labels>\n";
      for ( var image_id in _via_img_metadata ) {
-         xml_string += "<annotation>\n";
-         xml_string += "\t<filename>" + _via_img_metadata[image_id].filename + "</filename>\n";
-         xml_string += "\t<size>\n";
-         xml_string += "\t</size>\n";
+         xml_string += "\t<annotation>\n";
+         xml_string += "\t\t<filename>" + _via_img_metadata[image_id].filename + "</filename>\n";
+         xml_string += "\t\t<size>\n";
+         xml_string += "\t\t</size>\n";
          for ( var i = 0; i < _via_img_metadata[image_id].regions.length; i++ ) {
-            xml_string += "\t<object>\n";
+            xml_string += "\t\t<object>\n";
             for ( var attribute in _via_img_metadata[image_id].regions[i].region_attributes ) {
-                xml_string += "\t\t<" + attribute + ">" + _via_img_metadata[image_id].regions[i].region_attributes[attribute] + "</" + attribute + ">\n";
+                xml_string += "\t\t\t<" + attribute + ">" + _via_img_metadata[image_id].regions[i].region_attributes[attribute] + "</" + attribute + ">\n";
             }
-            xml_string += "\t\t<shape>" + _via_img_metadata[image_id].regions[i].shape_attributes.name + "</shape>\n";
+            xml_string += "\t\t\t<shape>" + _via_img_metadata[image_id].regions[i].shape_attributes.name + "</shape>\n";
             if (_via_img_metadata[image_id].regions[i].shape_attributes.name === "rect" ) {
-                xml_string += "\t\t<bndbox>\n";
-                xml_string += "\t\t\t<xmin>" + _via_img_metadata[image_id].regions[i].shape_attributes.x + "</xmin>\n";
-                xml_string += "\t\t\t<ymin>" + _via_img_metadata[image_id].regions[i].shape_attributes.y + "</ymin>\n";
-                xml_string += "\t\t\t<xmax>" + (_via_img_metadata[image_id].regions[i].shape_attributes.x + 
+                xml_string += "\t\t\t<bndbox>\n";
+                xml_string += "\t\t\t\t<xmin>" + _via_img_metadata[image_id].regions[i].shape_attributes.x + "</xmin>\n";
+                xml_string += "\t\t\t\t<ymin>" + _via_img_metadata[image_id].regions[i].shape_attributes.y + "</ymin>\n";
+                xml_string += "\t\t\t\t<xmax>" + (_via_img_metadata[image_id].regions[i].shape_attributes.x + 
                                                _via_img_metadata[image_id].regions[i].shape_attributes.width) + "</xmax>\n";
-                xml_string += "\t\t\t<ymax>" + (_via_img_metadata[image_id].regions[i].shape_attributes.y + 
+                xml_string += "\t\t\t\t<ymax>" + (_via_img_metadata[image_id].regions[i].shape_attributes.y + 
                                                _via_img_metadata[image_id].regions[i].shape_attributes.height) + "</ymax>\n";
-                xml_string += "\t\t</bndbox>\n";
+                xml_string += "\t\t\t</bndbox>\n";
             }
-            xml_string += "\t</object>\n";
+            xml_string += "\t\t</object>\n";
          }
-         xml_string += "</annotation>\n";
+         xml_string += "\t</annotation>\n";
      }
-     alert(xml_string);
+     xml_string += "</labels>\n";
      return [xml_string];
+  } else {
+     // FrameNum Xmin Ymin Xmax Ymax Class
+     var txt_string = ""; 
+     var frame_count = 0;
+     for ( var image_id in _via_img_metadata ) {
+
+     }
   }
 }
 
@@ -898,8 +906,6 @@ function save_data_to_local_file(data, filename) {
   a.href     = URL.createObjectURL(data);
   a.target   = '_blank';
   a.download = filename;
-
-  alert(json2xml(_via_img_metadata, ""));
 
   // simulate a mouse click event
   var event = new MouseEvent('click', {
