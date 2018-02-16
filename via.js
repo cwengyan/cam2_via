@@ -263,6 +263,7 @@ function sel_local_images() {
     invisible_file_input.onchange = store_local_img_ref;
     invisible_file_input.click();
   }
+  set_scale();
 }
 function download_all_region_data(type) {
   // Javascript strings (DOMString) is automatically converted to utf-8
@@ -391,6 +392,7 @@ function store_local_img_ref(event) {
   } else {
     show_message("Please upload some image files!");
   }
+  set_scale();
 }
 
 //
