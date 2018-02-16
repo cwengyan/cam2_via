@@ -827,7 +827,7 @@ function pack_via_metadata(return_type) {
       }
     }
     return csvdata;
-  } else {
+  } else if ( return_type === 'json' ) {
     // JSON.stringify() does not work with Map()
     // hence, we cast everything as objects
     var _via_img_metadata_as_obj = {};
@@ -864,6 +864,35 @@ function pack_via_metadata(return_type) {
       _via_img_metadata_as_obj[image_id] = image_data;
     }
     return [JSON.stringify(_via_img_metadata_as_obj)];
+  } else {
+     var xml_string = ""; 
+     for ( var image_id in _via_img_metadata ) {
+         xml_string += "<annotation>\n";
+         xml_string += "\t<filename>" + _via_img_metadata[image_id].filename + "</filename>\n";
+         xml_string += "\t<size>\n";
+         xml_string += "\t</size>\n";
+         for ( var i = 0; i < _via_img_metadata[image_id].regions.length; i++ ) {
+            xml_string += "\t<object>\n";
+            for ( var attribute in _via_img_metadata[image_id].regions[i].region_attributes ) {
+                xml_string += "\t\t<" + attribute + ">" + _via_img_metadata[image_id].regions[i].region_attributes[attribute] + "</" + attribute + ">\n";
+            }
+            xml_string += "\t\t<shape>" + _via_img_metadata[image_id].regions[i].shape_attributes.name + "</shape>\n";
+            if (_via_img_metadata[image_id].regions[i].shape_attributes.name === "rect" ) {
+                xml_string += "\t\t<bndbox>\n";
+                xml_string += "\t\t\t<xmin>" + _via_img_metadata[image_id].regions[i].shape_attributes.x + "</xmin>\n";
+                xml_string += "\t\t\t<ymin>" + _via_img_metadata[image_id].regions[i].shape_attributes.y + "</ymin>\n";
+                xml_string += "\t\t\t<xmax>" + (_via_img_metadata[image_id].regions[i].shape_attributes.x + 
+                                               _via_img_metadata[image_id].regions[i].shape_attributes.width) + "</xmax>\n";
+                xml_string += "\t\t\t<ymax>" + (_via_img_metadata[image_id].regions[i].shape_attributes.y + 
+                                               _via_img_metadata[image_id].regions[i].shape_attributes.height) + "</ymax>\n";
+                xml_string += "\t\t</bndbox>\n";
+            }
+            xml_string += "\t</object>\n";
+         }
+         xml_string += "</annotation>\n";
+     }
+     alert(xml_string);
+     return [xml_string];
   }
 }
 
@@ -872,6 +901,8 @@ function save_data_to_local_file(data, filename) {
   a.href     = URL.createObjectURL(data);
   a.target   = '_blank';
   a.download = filename;
+
+  alert(json2xml(_via_img_metadata, ""));
 
   // simulate a mouse click event
   var event = new MouseEvent('click', {
@@ -1035,7 +1066,6 @@ function show_image(image_index) {
     img_reader.readAsText( new Blob([_via_img_metadata[img_id].base64_img_data]) );
   }
 
-  set_scale();
 }
 
 // transform regions in image space to canvas space
@@ -3847,3 +3877,52 @@ function add_new_attribute(type, attribute_name) {
 //
 //function _via_hook_next_image() {}
 //function _via_hook_prev_image() {}
+
+// Converting between XML and JSON
+
+/*	This work is licensed under Creative Commons GNU LGPL License.
+
+	License: http://creativecommons.org/licenses/LGPL/2.1/
+   Version: 0.9
+	Author:  Stefan Goessner/2006
+	Web:     http://goessner.net/
+*/
+function json2xml(o, tab) {
+   var toXml = function(v, name, ind) {
+      var xml = "";
+      if (v instanceof Array) {
+         for (var i=0, n=v.length; i<n; i++)
+            xml += ind + toXml(v[i], name, ind+"\t") + "\n";
+      }
+      else if (typeof(v) == "object") {
+         var hasChild = false;
+         xml += ind + "<" + name;
+         for (var m in v) {
+            if (m.charAt(0) == "@")
+               xml += " " + m.substr(1) + "=\"" + v[m].toString() + "\"";
+            else
+               hasChild = true;
+         }
+         xml += hasChild ? ">" : "/>";
+         if (hasChild) {
+            for (var m in v) {
+               if (m == "#text")
+                  xml += v[m];
+               else if (m == "#cdata")
+                  xml += "<![CDATA[" + v[m] + "]]>";
+               else if (m.charAt(0) != "@")
+                  xml += toXml(v[m], m, ind+"\t");
+            }
+            xml += (xml.charAt(xml.length-1)=="\n"?ind:"") + "</" + name + ">";
+         }
+      }
+      else {
+         xml += ind + "<" + name + ">" + v.toString() +  "</" + name + ">";
+      }
+      return xml;
+   }, xml="";
+   for (var m in o)
+      xml += toXml(o[m], m, "");
+   return tab ? xml.replace(/\t/g, tab) : xml.replace(/\t|\n/g, "");
+}
+
