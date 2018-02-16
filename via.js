@@ -3019,16 +3019,41 @@ window.addEventListener('keydown', function(e) {
     }
   }
 
-  if( e.which === 46 || e.which === 8) { // Del or Backspace
+  if (e.which === 9) { 
+    if (_via_canvas_regions.length > 0) {
+      var region_id = -1;
+      if (_via_is_region_selected) {
+        region_id = _via_user_sel_region_id;
+        if (e.shiftKey) { // tab backwards through bounding boxes
+          region_id = (region_id - 1 +_via_canvas_regions.length) % _via_canvas_regions.length;
+        }
+        else { // tab forward through bounding boxes
+          region_id = (region_id + 1) % _via_canvas_regions.length;
+        }
+      }
+      else {
+        region_id = 1;
+      }
+        
+      _via_user_sel_region_id = region_id;
+      toggle_all_regions_selection(false);
+      set_region_select_state(region_id, true);
+      _via_redraw_reg_canvas();
+    }
+    e.preventDefault();
+    return;
+  }
+
+  if (e.which === 46 || e.which === 8) { // Del or Backspace
     del_sel_regions();
     e.preventDefault();
   }
-  if (e.which === 78 || e.which === 39) { // n or right arrow
+  if (e.which === 78) { // next image (n)
     move_to_next_image();
     e.preventDefault();
     return;
   }
-  if (e.which === 80 || e.which === 37) { // n or right arrow
+  if (e.which === 80) { // previous image (p) 
     move_to_prev_image();
     e.preventDefault();
     return;
