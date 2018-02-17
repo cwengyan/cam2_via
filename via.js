@@ -95,7 +95,7 @@ var VIA_CSV_SEP        = ',';
 var VIA_CSV_QUOTE_CHAR = '"';
 var VIA_CSV_KEYVAL_SEP = ':';
 var VIA_IMPORT_CSV_COMMENT_CHAR = '#';
-var VIA_GLOBAL_ID_LABEL = "name";
+var VIA_GLOBAL_ID_LABEL = "global_id";
 
 var _via_global_id = 0;       // keep track of global ID
 var _via_img_metadata = {};   // data structure to store loaded images metadata
@@ -1836,9 +1836,9 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
           break;
         }
 
-// TODO
-//      _via_global_id += 1;
-//      _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = _via_global_id;
+      _via_global_id += 1;
+     _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
+
     } else {
       show_message('Cannot add such a small region');
     }
@@ -2481,7 +2481,8 @@ function draw_all_region_id() {
     var w = Math.abs(bbox[2] - bbox[0]);
     _via_reg_ctx.font = VIA_THEME_ATTRIBUTE_VALUE_FONT;
 
-    var annotation_str  = (i+1).toString();
+    //var annotation_str  = (i+1).toString();
+    var annotation_str  = _via_img_metadata[_via_image_id].regions[i].region_attributes[VIA_GLOBAL_ID_LABEL]
     var bgnd_rect_width = _via_reg_ctx.measureText(annotation_str).width * 2;
 
     var char_width  = _via_reg_ctx.measureText('M').width;
