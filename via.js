@@ -873,6 +873,8 @@ function pack_via_metadata(return_type) {
          xml_string += "\t<annotation>\n";
          xml_string += "\t\t<filename>" + _via_img_metadata[image_id].filename + "</filename>\n";
          xml_string += "\t\t<size>\n";
+         xml_string += "\t\t\t<width>" + _via_canvas_width + "</width>\n";
+         xml_string += "\t\t\t<height>" + _via_canvas_height + "</height>\n";
          xml_string += "\t\t</size>\n";
          for ( var i = 0; i < _via_img_metadata[image_id].regions.length; i++ ) {
             xml_string += "\t\t<object>\n";
@@ -901,8 +903,16 @@ function pack_via_metadata(return_type) {
      var txt_string = ""; 
      var frame_count = 0;
      for ( var image_id in _via_img_metadata ) {
-
+        for ( var i = 0; i < _via_img_metadata[image_id].regions.length; i++ ){
+            txt_string += frame_count + " " + _via_img_metadata[image_id].regions[i].shape_attributes.x + " "
+                                            + _via_img_metadata[image_id].regions[i].shape_attributes.y + " "
+                                            + (_via_img_metadata[image_id].regions[i].shape_attributes.x + _via_img_metadata[image_id].regions[i].shape_attributes.width) + " "
+                                            + (_via_img_metadata[image_id].regions[i].shape_attributes.y + _via_img_metadata[image_id].regions[i].shape_attributes.height) + " " + 0 + "\n";
+                            
+        }
+        frame_count = frame_count + 1;
      }
+     return [txt_string];
   }
 }
 
