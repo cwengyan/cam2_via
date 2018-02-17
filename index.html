@@ -558,8 +558,16 @@
           <li id="toolbar_sel_all_region" onclick="sel_all_regions()" title="Select All Regions">a</li>
           <li id="toolbar_del_region" onclick="del_sel_regions()" title="Delete Region">&times;</li>
         </ul>
-      </div> <!-- endof #toolbar -->
+      </div> <!-- end of #tollbar -->
+
       <input type="file" id="invisible_file_input" multiple name="files[]" style="display:none">
+      <!-- Display info -->
+      <div class="toolbar">
+        <ul>
+          <li id="info_global_id_display" style="margin-left: 1em;" title="Current Global ID">Global ID: 0</li>
+          <li id="info_set_global_id" style="margin-left: 1em;" onclick="set_global_id()" title="Set Global Id">Set Global Id</li>
+        </ul>
+      </div> <!-- endof #info bar-->
     </div> <!-- endof #top_panel -->
 
     <!-- Middle Panel contains a left-sidebar and image display areas -->
