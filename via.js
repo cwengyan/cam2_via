@@ -97,7 +97,7 @@ var VIA_CSV_KEYVAL_SEP = ':';
 var VIA_IMPORT_CSV_COMMENT_CHAR = '#';
 var VIA_GLOBAL_ID_LABEL = "global_id";
 
-var _via_global_id = 0;       // keep track of global ID
+var _via_global_id = 1;       // keep track of global ID
 var _via_img_metadata = {};   // data structure to store loaded images metadata
 var _via_img_count    = 0;    // count of the loaded images
 var _via_canvas_regions = []; // image regions spec. in canvas space
@@ -245,7 +245,7 @@ function _via_init() {
 
   set_scale();
   add_new_attribute('r', VIA_GLOBAL_ID_LABEL); // initialize default global ID
-  global_id_display.innerHTML = "Global ID: " + _via_global_id;
+  info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 }
 
 //
@@ -1838,9 +1838,9 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
       }
 
       //updates global id every time a new region is drawn
-      _via_global_id += 1;
       _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
-      global_id_display.innerHTML = "Global ID: " + _via_global_id;
+      _via_global_id += 1;
+      info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
     } else {
       show_message('Cannot add such a small region');
@@ -3482,7 +3482,7 @@ function set_global_id() {
   if (Number.isInteger && input > 0) {
     _via_global_id = parseInt(input);
     show_message("Global Id counter updated");
-    global_id_display.innerHTML = "Global ID: " + _via_global_id;
+    info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
   }
   else {
