@@ -3166,17 +3166,30 @@ window.addEventListener('keydown', function(e) {
   if (e.which === 37 || e.which === 38 || e.which === 39 || e.which === 40) {
     var move_x = 0;
     var move_y = 0;
-    if (e.which === 37 ) move_x = -_via_movement_rate;
-    if (e.which === 38 ) move_y = -_via_movement_rate;
-    if (e.which === 39 ) move_x =  _via_movement_rate;
-    if (e.which === 40 ) move_y =  _via_movement_rate;
+    var grow_x = 0;
+    var grow_y = 0;
+    if( e.shiftKey ) {
+        if (e.which === 37 ) grow_x = -_via_movement_rate;
+        if (e.which === 38 ) grow_y = -_via_movement_rate;
+        if (e.which === 39 ) grow_x =  _via_movement_rate;
+        if (e.which === 40 ) grow_y =  _via_movement_rate;
+        console.log("shift pressed");
+    } else {
+        if (e.which === 37 ) move_x = -_via_movement_rate;
+        if (e.which === 38 ) move_y = -_via_movement_rate;
+        if (e.which === 39 ) move_x =  _via_movement_rate;
+        if (e.which === 40 ) move_y =  _via_movement_rate;
+        console.log("shift not pressed");
+    }
     if (e.ctrlKey) {
        move_x *= VIA_CTRL_MOVE_RATE;
        move_y *= VIA_CTRL_MOVE_RATE;
+       grow_x *= VIA_CTRL_MOVE_RATE;
+       grow_y *= VIA_CTRL_MOVE_RATE;
     }
 
     for ( var i = 0; i < _via_canvas_regions.length; i++ ){
-        if(_via_canvas_regions[i].is_user_selected) change_region(_via_image_id, i, move_x, move_y, 0, 0);
+        if (_via_canvas_regions[i].is_user_selected) change_region(_via_image_id, i, move_x, move_y, grow_x, grow_y);
     }
     _via_redraw_reg_canvas();
     e.preventDefault();
@@ -3882,9 +3895,15 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
         var ynew = image_attr['y'] + Math.round(move_y * _via_canvas_scale);
         image_attr['x'] = xnew;
         image_attr['y'] = ynew;
-
         canvas_attr['x'] = Math.round( image_attr['x'] / _via_canvas_scale);
         canvas_attr['y'] = Math.round( image_attr['y'] / _via_canvas_scale);
+
+        var widthnew = image_attr['width'] + Math.round(grow_x * _via_canvas_scale);
+        var heightnew = image_attr['height'] + Math.round(grow_y* _via_canvas_scale);
+        image_attr['width'] = widthnew;
+        image_attr['height'] = heightnew;
+        canvas_attr['width'] = Math.round( image_attr['width'] / _via_canvas_scale);
+        canvas_attr['height'] = Math.round( image_attr['height'] / _via_canvas_scale);
         break;
 
       case VIA_REGION_SHAPE.CIRCLE: // Fall-through
