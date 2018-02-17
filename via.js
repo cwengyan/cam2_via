@@ -97,7 +97,7 @@ var VIA_CSV_KEYVAL_SEP = ':';
 var VIA_IMPORT_CSV_COMMENT_CHAR = '#';
 var VIA_GLOBAL_ID_LABEL = "global_id";
 
-var _via_global_id = 0;       // keep track of global ID
+var _via_global_id = 1;       // keep track of global ID
 var _via_img_metadata = {};   // data structure to store loaded images metadata
 var _via_img_count    = 0;    // count of the loaded images
 var _via_canvas_regions = []; // image regions spec. in canvas space
@@ -1660,6 +1660,11 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
         // newly drawn region is automatically selected
         select_only_region(_via_current_polygon_region_id);
 
+        //updates global id every time a new region is drawn
+        _via_img_metadata[_via_image_id].regions[_via_current_polygon_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
+        _via_global_id += 1;
+        global_id_display.innerHTML = "Global ID: " + _via_global_id;
+
         _via_current_polygon_region_id = -1;
         update_attributes_panel();
         save_current_data_to_browser_cache();
@@ -3172,25 +3177,25 @@ window.addEventListener('keydown', function(e) {
     var grow_x = 0;
     var grow_y = 0;
     if( e.shiftKey ) {
-        if (e.which === 37 ) grow_x = -_via_movement_rate;
-        if (e.which === 38 ) grow_y = -_via_movement_rate;
-        if (e.which === 39 ) grow_x =  _via_movement_rate;
-        if (e.which === 40 ) grow_y =  _via_movement_rate;
+      if (e.which === 37 ) grow_x = -_via_movement_rate;
+      if (e.which === 38 ) grow_y = -_via_movement_rate;
+      if (e.which === 39 ) grow_x =  _via_movement_rate;
+      if (e.which === 40 ) grow_y =  _via_movement_rate;
     } else {
-        if (e.which === 37 ) move_x = -_via_movement_rate;
-        if (e.which === 38 ) move_y = -_via_movement_rate;
-        if (e.which === 39 ) move_x =  _via_movement_rate;
-        if (e.which === 40 ) move_y =  _via_movement_rate;
+      if (e.which === 37 ) move_x = -_via_movement_rate;
+      if (e.which === 38 ) move_y = -_via_movement_rate;
+      if (e.which === 39 ) move_x =  _via_movement_rate;
+      if (e.which === 40 ) move_y =  _via_movement_rate;
     }
     if (e.ctrlKey) {
-       move_x *= VIA_CTRL_MOVE_RATE;
-       move_y *= VIA_CTRL_MOVE_RATE;
-       grow_x *= VIA_CTRL_MOVE_RATE;
-       grow_y *= VIA_CTRL_MOVE_RATE;
+      move_x *= VIA_CTRL_MOVE_RATE;
+      move_y *= VIA_CTRL_MOVE_RATE;
+      grow_x *= VIA_CTRL_MOVE_RATE;
+      grow_y *= VIA_CTRL_MOVE_RATE;
     }
 
     for ( var i = 0; i < _via_canvas_regions.length; i++ ){
-        if (_via_canvas_regions[i].is_user_selected) change_region(_via_image_id, i, move_x, move_y, grow_x, grow_y);
+      if (_via_canvas_regions[i].is_user_selected) change_region(_via_image_id, i, move_x, move_y, grow_x, grow_y);
     }
     _via_redraw_reg_canvas();
     e.preventDefault();
@@ -3900,86 +3905,86 @@ function add_new_attribute(type, attribute_name) {
 }
 
 function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
-      var image_attr = _via_img_metadata[image_id].regions[region_id].shape_attributes;
-      var canvas_attr = _via_canvas_regions[region_id].shape_attributes;
+  var image_attr = _via_img_metadata[image_id].regions[region_id].shape_attributes;
+  var canvas_attr = _via_canvas_regions[region_id].shape_attributes;
 
-      switch( canvas_attr['name'] ) {
-      case VIA_REGION_SHAPE.RECT:
-        var xnew = image_attr['x'] + Math.round(move_x * _via_canvas_scale);
-        var ynew = image_attr['y'] + Math.round(move_y * _via_canvas_scale);
-        image_attr['x'] = xnew;
-        image_attr['y'] = ynew;
-        canvas_attr['x'] = Math.round( image_attr['x'] / _via_canvas_scale);
-        canvas_attr['y'] = Math.round( image_attr['y'] / _via_canvas_scale);
+  switch( canvas_attr['name'] ) {
+    case VIA_REGION_SHAPE.RECT:
+      var xnew = image_attr['x'] + Math.round(move_x * _via_canvas_scale);
+      var ynew = image_attr['y'] + Math.round(move_y * _via_canvas_scale);
+      image_attr['x'] = xnew;
+      image_attr['y'] = ynew;
+      canvas_attr['x'] = Math.round( image_attr['x'] / _via_canvas_scale);
+      canvas_attr['y'] = Math.round( image_attr['y'] / _via_canvas_scale);
 
-        var widthnew = image_attr['width'] + Math.round(grow_x * _via_canvas_scale);
-        var heightnew = image_attr['height'] + Math.round(grow_y* _via_canvas_scale);
-        if (widthnew > 0 && heightnew > 0) {
-            image_attr['width'] = widthnew;
-            image_attr['height'] = heightnew;
-            canvas_attr['width'] = Math.round( image_attr['width'] / _via_canvas_scale);
-            canvas_attr['height'] = Math.round( image_attr['height'] / _via_canvas_scale);
-        }
-        break;
-
-      case VIA_REGION_SHAPE.CIRCLE: 
-        var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
-        var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
-        image_attr['cx'] = cxnew;
-        image_attr['cy'] = cynew;
-        canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
-        canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
-
-        var rnew = image_attr['r'] + Math.round(grow_x * _via_canvas_scale);
-        if (rnew > 0 ) {
-            image_attr['r'] = rnew;
-            canvas_attr['r'] = Math.round( image_attr['r'] / _via_canvas_scale);
-        }
-        break;
-      case VIA_REGION_SHAPE.ELLIPSE: 
-        var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
-        var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
-        image_attr['cx'] = cxnew;
-        image_attr['cy'] = cynew;
-
-        canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
-        canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
-
-        var rxnew = image_attr['rx'] + Math.round(grow_x * _via_canvas_scale);
-        var rynew = image_attr['ry'] - Math.round(grow_y* _via_canvas_scale);
-        if (rynew > 0 && rxnew > 0) {
-            image_attr['rx'] = rxnew;
-            image_attr['ry'] = rynew;
-            canvas_attr['rx'] = Math.round( image_attr['rx'] / _via_canvas_scale);
-            canvas_attr['ry'] = Math.round( image_attr['ry'] / _via_canvas_scale);
-        }
-        break;
-      case VIA_REGION_SHAPE.POINT:
-        var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
-        var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
-        image_attr['cx'] = cxnew;
-        image_attr['cy'] = cynew;
-
-        canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
-        canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
-        break;
-
-      case VIA_REGION_SHAPE.POLYGON:
-        var img_px = image_attr['all_points_x'];
-        var img_py = image_attr['all_points_y'];
-        for (var i=0; i<img_px.length; ++i) {
-          img_px[i] = img_px[i] + Math.round(move_x * _via_canvas_scale);
-          img_py[i] = img_py[i] + Math.round(move_y * _via_canvas_scale);
-        }
-
-        var canvas_px = canvas_attr['all_points_x'];
-        var canvas_py = canvas_attr['all_points_y'];
-        for (var i=0; i<canvas_px.length; ++i) {
-          canvas_px[i] = Math.round( img_px[i] / _via_canvas_scale );
-          canvas_py[i] = Math.round( img_py[i] / _via_canvas_scale );
-        }
-        break;
+      var widthnew = image_attr['width'] + Math.round(grow_x * _via_canvas_scale);
+      var heightnew = image_attr['height'] + Math.round(grow_y* _via_canvas_scale);
+      if (widthnew > 0 && heightnew > 0) {
+        image_attr['width'] = widthnew;
+        image_attr['height'] = heightnew;
+        canvas_attr['width'] = Math.round( image_attr['width'] / _via_canvas_scale);
+        canvas_attr['height'] = Math.round( image_attr['height'] / _via_canvas_scale);
       }
+      break;
+
+    case VIA_REGION_SHAPE.CIRCLE: 
+      var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
+      var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
+      image_attr['cx'] = cxnew;
+      image_attr['cy'] = cynew;
+      canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
+      canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+
+      var rnew = image_attr['r'] + Math.round(grow_x * _via_canvas_scale);
+      if (rnew > 0 ) {
+        image_attr['r'] = rnew;
+        canvas_attr['r'] = Math.round( image_attr['r'] / _via_canvas_scale);
+      }
+      break;
+    case VIA_REGION_SHAPE.ELLIPSE: 
+      var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
+      var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
+      image_attr['cx'] = cxnew;
+      image_attr['cy'] = cynew;
+
+      canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
+      canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+
+      var rxnew = image_attr['rx'] + Math.round(grow_x * _via_canvas_scale);
+      var rynew = image_attr['ry'] - Math.round(grow_y* _via_canvas_scale);
+      if (rynew > 0 && rxnew > 0) {
+        image_attr['rx'] = rxnew;
+        image_attr['ry'] = rynew;
+        canvas_attr['rx'] = Math.round( image_attr['rx'] / _via_canvas_scale);
+        canvas_attr['ry'] = Math.round( image_attr['ry'] / _via_canvas_scale);
+      }
+      break;
+    case VIA_REGION_SHAPE.POINT:
+      var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
+      var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
+      image_attr['cx'] = cxnew;
+      image_attr['cy'] = cynew;
+
+      canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
+      canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      break;
+
+    case VIA_REGION_SHAPE.POLYGON:
+      var img_px = image_attr['all_points_x'];
+      var img_py = image_attr['all_points_y'];
+      for (var i=0; i<img_px.length; ++i) {
+        img_px[i] = img_px[i] + Math.round(move_x * _via_canvas_scale);
+        img_py[i] = img_py[i] + Math.round(move_y * _via_canvas_scale);
+      }
+
+      var canvas_px = canvas_attr['all_points_x'];
+      var canvas_py = canvas_attr['all_points_y'];
+      for (var i=0; i<canvas_px.length; ++i) {
+        canvas_px[i] = Math.round( img_px[i] / _via_canvas_scale );
+        canvas_py[i] = Math.round( img_py[i] / _via_canvas_scale );
+      }
+      break;
+  }
 }
 
 //
