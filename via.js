@@ -3921,10 +3921,12 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
     case VIA_REGION_SHAPE.RECT:
       var xnew = image_attr['x'] + Math.round(move_x * _via_canvas_scale);
       var ynew = image_attr['y'] + Math.round(move_y * _via_canvas_scale);
-      image_attr['x'] = xnew;
-      image_attr['y'] = ynew;
-      canvas_attr['x'] = Math.round( image_attr['x'] / _via_canvas_scale);
-      canvas_attr['y'] = Math.round( image_attr['y'] / _via_canvas_scale);
+      if (xnew >= 0 && xnew <= _via_canvas_width - image_attr['width'] &&  ynew >= 0 && ynew <= _via_canvas_height - image_attr['height'] ) {
+          image_attr['x'] = xnew;
+          image_attr['y'] = ynew;
+          canvas_attr['x'] = Math.round( image_attr['x'] / _via_canvas_scale);
+          canvas_attr['y'] = Math.round( image_attr['y'] / _via_canvas_scale);
+      }
 
       var widthnew = image_attr['width'] + Math.round(grow_x * _via_canvas_scale);
       var heightnew = image_attr['height'] + Math.round(grow_y* _via_canvas_scale);
@@ -3939,10 +3941,12 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
     case VIA_REGION_SHAPE.CIRCLE: 
       var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
       var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
-      image_attr['cx'] = cxnew;
-      image_attr['cy'] = cynew;
-      canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
-      canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      if (cxnew >= 0 && cxnew <= _via_canvas_width &&  cynew >= 0 && cynew <= _via_canvas_height) {
+          image_attr['cx'] = cxnew;
+          image_attr['cy'] = cynew;
+          canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
+          canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      }
 
       var rnew = image_attr['r'] + Math.round(grow_x * _via_canvas_scale);
       if (rnew > 0 ) {
@@ -3953,11 +3957,12 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
     case VIA_REGION_SHAPE.ELLIPSE: 
       var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
       var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
-      image_attr['cx'] = cxnew;
-      image_attr['cy'] = cynew;
-
-      canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
-      canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      if (cxnew >= 0 && cxnew <= _via_canvas_width &&  cynew >= 0 && cynew <= _via_canvas_height) {
+          image_attr['cx'] = cxnew;
+          image_attr['cy'] = cynew;
+          canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
+          canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      }
 
       var rxnew = image_attr['rx'] + Math.round(grow_x * _via_canvas_scale);
       var rynew = image_attr['ry'] - Math.round(grow_y* _via_canvas_scale);
@@ -3971,11 +3976,12 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
     case VIA_REGION_SHAPE.POINT:
       var cxnew = image_attr['cx'] + Math.round(move_x * _via_canvas_scale);
       var cynew = image_attr['cy'] + Math.round(move_y * _via_canvas_scale);
-      image_attr['cx'] = cxnew;
-      image_attr['cy'] = cynew;
-
-      canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
-      canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      if (cxnew >= 0 && cxnew <= _via_canvas_width &&  cynew >= 0 && cynew <= _via_canvas_height) {
+          image_attr['cx'] = cxnew;
+          image_attr['cy'] = cynew;
+          canvas_attr['cx'] = Math.round( image_attr['cx'] / _via_canvas_scale);
+          canvas_attr['cy'] = Math.round( image_attr['cy'] / _via_canvas_scale);
+      }
       break;
 
     case VIA_REGION_SHAPE.POLYGON:
