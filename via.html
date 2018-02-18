@@ -968,7 +968,7 @@ var annotation_textarea     = document.getElementById("annotation_textarea");
 var loaded_img_list_panel = document.getElementById('loaded_img_list_panel');
 var attributes_panel      = document.getElementById('attributes_panel');
 var annotation_data_window;
-var global_id_display = document.getElementById("info_global_id_display");
+var set_global_id = document.getElementById("info_set_global_id");
 
 var BBOX_LINE_WIDTH       = 4;
 var BBOX_SELECTED_OPACITY = 0.3;
@@ -2435,10 +2435,11 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
         // newly drawn region is automatically selected
         select_only_region(_via_current_polygon_region_id);
 
+        console.log("is region selected?" + _via_user_sel_region_id);
         //updates global id every time a new region is drawn
         _via_img_metadata[_via_image_id].regions[_via_current_polygon_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
         _via_global_id += 1;
-        global_id_display.innerHTML = "Global ID: " + _via_global_id;
+        set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
         _via_current_polygon_region_id = -1;
         update_attributes_panel();
@@ -2500,6 +2501,15 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
               canvas_point_region.shape_attributes['cy'] = Math.round(_via_click_y0);
               _via_canvas_regions.push(canvas_point_region);
 
+              // newly drawn region is automatically selected
+              var current_region_id = _via_img_metadata[_via_image_id].regions.length-1;
+              select_only_region(current_region_id);
+
+              //updates global id every time a new region is drawn
+            _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
+            _via_global_id += 1;
+            info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
+
               update_attributes_panel();
               save_current_data_to_browser_cache();
               break;
@@ -2546,7 +2556,7 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
     canvas_img_region.is_user_selected = true;
     _via_is_region_selected = true;
     _via_user_sel_region_id = _via_canvas_regions.length; // new region's id
-
+    
     if ( region_dx > VIA_REGION_MIN_DIM ||
       region_dy > VIA_REGION_MIN_DIM ) { // avoid regions with 0 dim
       switch(_via_current_shape) {
@@ -2620,7 +2630,7 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
       //updates global id every time a new region is drawn
       _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
       _via_global_id += 1;
-      info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
+      set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
     } else {
       show_message('Cannot add such a small region');
