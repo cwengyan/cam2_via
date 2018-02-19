@@ -968,7 +968,7 @@ var annotation_textarea     = document.getElementById("annotation_textarea");
 var loaded_img_list_panel = document.getElementById('loaded_img_list_panel');
 var attributes_panel      = document.getElementById('attributes_panel');
 var annotation_data_window;
-var global_id_display = document.getElementById("info_set_global_id");
+var set_global_id = document.getElementById("info_set_global_id");
 
 var BBOX_LINE_WIDTH       = 4;
 var BBOX_SELECTED_OPACITY = 0.3;
@@ -1020,7 +1020,7 @@ function _via_init() {
 
   set_scale();
   add_new_attribute('r', VIA_GLOBAL_ID_LABEL); // initialize default global ID
-  global_id_display.innerHTML = "Set Global ID (" + _via_global_id + ")";
+  info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 }
 
 //
@@ -2435,10 +2435,11 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
         // newly drawn region is automatically selected
         select_only_region(_via_current_polygon_region_id);
 
+        console.log("is region selected?" + _via_user_sel_region_id);
         //updates global id every time a new region is drawn
         _via_img_metadata[_via_image_id].regions[_via_current_polygon_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
         _via_global_id += 1;
-        global_id_display.innerHTML = "Set Global ID (" + _via_global_id + ")";
+        set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
         _via_current_polygon_region_id = -1;
         update_attributes_panel();
@@ -2507,7 +2508,7 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
               //updates global id every time a new region is drawn
             _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
             _via_global_id += 1;
-            global_id_display.innerHTML = "Set Global ID (" + _via_global_id + ")";
+            info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
               update_attributes_panel();
               save_current_data_to_browser_cache();
@@ -2629,7 +2630,7 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
       //updates global id every time a new region is drawn
       _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
       _via_global_id += 1;
-      global_id_display.innerHTML = "Set Global ID (" + _via_global_id + ")";
+      set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
     } else {
       show_message('Cannot add such a small region');
@@ -4159,7 +4160,7 @@ function move_to_next_image() {
 }
 
 function get_base_ratio(){
-  var height = document.documentElement.clientHeight - document.getElementById('ui_top_panel').offsetHeight - 40;
+  var height = document.documentElement.clientHeight - document.getElementById('ui_top_panel').offsetHeight - 60;
   var width = document.getElementById('ui_top_panel').offsetWidth;
   var ratio = 0;
   if ( _via_canvas_width / _via_canvas_height > width / height ) {
@@ -4271,7 +4272,7 @@ function set_global_id() {
   if (Number.isInteger && input > 0) {
     _via_global_id = parseInt(input);
     show_message("Global Id counter updated");
-    global_id_display.innerHTML = "Set Global ID (" + _via_global_id + ")";
+    info_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
   }
   else {
@@ -4696,7 +4697,7 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
     case VIA_REGION_SHAPE.RECT:
       var xnew = image_attr['x'] + Math.round(move_x * _via_canvas_scale);
       var ynew = image_attr['y'] + Math.round(move_y * _via_canvas_scale);
-      if (xnew >= 0 && xnew <= _via_canvas_width - image_attr['width'] &&  ynew >= 0 && ynew <= _via_canvas_height - image_attr['height'] ) {
+      if (xnew >= 0 && xnew < _via_canvas_width - image_attr['width'] &&  ynew >= 0 && ynew < _via_canvas_height - image_attr['height'] ) {
           image_attr['x'] = xnew;
           image_attr['y'] = ynew;
           canvas_attr['x'] = Math.round( image_attr['x'] / _via_canvas_scale);
@@ -4705,7 +4706,7 @@ function change_region(image_id, region_id, move_x, move_y, grow_x, grow_y) {
 
       var widthnew = image_attr['width'] + Math.round(grow_x * _via_canvas_scale);
       var heightnew = image_attr['height'] + Math.round(grow_y* _via_canvas_scale);
-      if (widthnew > 0 && heightnew > 0) {
+      if (widthnew > 0 && heightnew > 0 && widthnew + image_attr['x'] < _via_canvas_width && heightnew +  image_attr['y'] < _via_canvas_height) {
         image_attr['width'] = widthnew;
         image_attr['height'] = heightnew;
         canvas_attr['width'] = Math.round( image_attr['width'] / _via_canvas_scale);
