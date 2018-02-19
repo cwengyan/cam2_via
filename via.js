@@ -193,7 +193,7 @@ var annotation_textarea     = document.getElementById("annotation_textarea");
 var loaded_img_list_panel = document.getElementById('loaded_img_list_panel');
 var attributes_panel      = document.getElementById('attributes_panel');
 var annotation_data_window;
-var set_global_id = document.getElementById("info_set_global_id");
+var var_set_global_id = document.getElementById("info_set_global_id");
 
 var BBOX_LINE_WIDTH       = 4;
 var BBOX_SELECTED_OPACITY = 0.3;
@@ -1664,7 +1664,7 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
         //updates global id every time a new region is drawn
         _via_img_metadata[_via_image_id].regions[_via_current_polygon_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
         _via_global_id += 1;
-        set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
+        var_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
         _via_current_polygon_region_id = -1;
         update_attributes_panel();
@@ -1855,7 +1855,7 @@ _via_reg_canvas.addEventListener('mouseup', function(e) {
       //updates global id every time a new region is drawn
       _via_img_metadata[_via_image_id].regions[_via_user_sel_region_id].region_attributes[VIA_GLOBAL_ID_LABEL] = "" +_via_global_id;
       _via_global_id += 1;
-      set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
+      var_set_global_id.innerHTML = "Set Global ID (" + _via_global_id + ")";
 
     } else {
       show_message('Cannot add such a small region');
